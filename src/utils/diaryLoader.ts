@@ -53,33 +53,46 @@ export async function loadAllRecords(): Promise<Record[]> {
   try {
     // diaryList.json에서 동적으로 생성된 파일 목록 가져오기
     const allFiles = (diaryList as RecordList).files;
+    console.log('전체 파일 목록:', allFiles);
     
     // memo.md 파일 제외하고 레코드 파일만 필터링
     const recordFiles = allFiles.filter(file => !file.includes('memo.md'));
+    console.log('필터링된 레코드 파일:', recordFiles);
     
     // 모든 파일을 병렬로 로드
     const filePromises = recordFiles.map(async (filePath) => {
       try {
         // GitHub Pages 배포를 위해 항상 base URL 포함
         const fullPath = `/daily-record${filePath}`;
+        console.log('파일 로드 시도:', fullPath);
         const response = await fetch(fullPath);
-        if (!response.ok) return null;
+        console.log('응답 상태:', response.status, response.ok);
+        if (!response.ok) {
+          console.error('파일 로드 실패:', fullPath, response.status);
+          return null;
+        }
         const content = await response.text();
+        console.log('파일 내용 길이:', content.length);
         const record = parseRecordFile(filePath, content);
+        console.log('파싱된 레코드:', record);
         return record;
-      } catch {
+      } catch (error) {
+        console.error('파일 로드 에러:', filePath, error);
         return null;
       }
     });
     
     const results = await Promise.all(filePromises);
+    console.log('로드 결과:', results);
     const validRecords = results.filter((record): record is Record => record !== null);
+    console.log('유효한 레코드 수:', validRecords.length);
     records.push(...validRecords);
     
-  } catch {
-    // 에러 발생 시 빈 배열 반환
+  } catch (error) {
+    console.error('레코드 로드 에러:', error);
   }
   
+  console.log('최종 레코드 수:', records.length);
   // 날짜 역순으로 정렬 (최신순)
   return records.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }

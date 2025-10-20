@@ -169,32 +169,6 @@ export default function DiaryViewer() {
     return `/diaries/${year}/${month}/${src}`;
   };
 
-  // 이미지 크기 조정 함수
-  const getImageDimensions = (naturalWidth: number, naturalHeight: number) => {
-    const maxSize = 600; // 기준 크기 (현재 화면 이미지 가로의 절반 정도)
-    
-    // 원본이 기준 크기보다 작으면 원본 크기 사용
-    if (naturalWidth <= maxSize && naturalHeight <= maxSize) {
-      return { width: naturalWidth, height: naturalHeight };
-    }
-    
-    // 비율을 유지하면서 기준 크기에 맞춤
-    const aspectRatio = naturalWidth / naturalHeight;
-    
-    if (naturalWidth > naturalHeight) {
-      // 가로가 더 긴 경우
-      return {
-        width: maxSize,
-        height: Math.round(maxSize / aspectRatio)
-      };
-    } else {
-      // 세로가 더 긴 경우
-      return {
-        width: Math.round(maxSize * aspectRatio),
-        height: maxSize
-      };
-    }
-  };
 
   if (loading) {
     return (

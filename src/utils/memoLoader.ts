@@ -3,7 +3,8 @@ export const loadMemo = async (): Promise<string> => {
   try {
     // 올바른 경로 설정
     const memoPath = '/records/memo.md';
-    const fullPath = process.env.NODE_ENV === 'development' ? `/daily-record${memoPath}` : memoPath;
+    // GitHub Pages 배포를 위해 항상 base URL 포함
+    const fullPath = `/daily-record${memoPath}`;
     
     const response = await fetch(fullPath);
     

@@ -5,18 +5,14 @@ export const loadMemo = async (): Promise<string> => {
     const memoPath = '/records/memo.md';
     // GitHub Pages 배포를 위해 항상 base URL 포함
     const fullPath = `/daily-record${memoPath}`;
-    console.log('메모 파일 로드 시도:', fullPath);
     
     const response = await fetch(fullPath);
-    console.log('메모 응답 상태:', response.status, response.ok);
     
     if (!response.ok) {
       throw new Error(`파일을 찾을 수 없습니다. 상태: ${response.status}`);
     }
     
     const content = await response.text();
-    console.log('메모 내용 길이:', content.length);
-    console.log('메모 내용 미리보기:', content.substring(0, 100));
     
     // HTML 태그가 포함된 경우 에러
     if (content.includes('<!doctype html>') || content.includes('<html') || content.includes('<script')) {
@@ -25,14 +21,12 @@ export const loadMemo = async (): Promise<string> => {
     
     // 마크다운 내용인지 확인
     if (content.trim().length > 0 && !content.includes('<!doctype html>') && !content.includes('<html')) {
-      console.log('메모 로드 성공');
       return content;
     }
     
     throw new Error('마크다운 내용이 아님');
     
   } catch (error) {
-    console.error('메모 로드 실패:', error);
     // 기본 메모 반환
     return `# 📝 메모
 

@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "homepage": "https://nimkoes.github.io/daily-record-template/",
+  "homepage": "https://nimkoes.github.io/daily-record/",
   "scripts": {
     "dev": "npm run generate-diary-list && vite",
     "build": "npm run generate-diary-list && tsc -b && vite build",

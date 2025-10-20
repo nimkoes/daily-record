@@ -3,7 +3,7 @@ export const loadMemo = async (): Promise<string> => {
   try {
     // 올바른 경로 설정
     const memoPath = '/records/memo.md';
-    const fullPath = process.env.NODE_ENV === 'development' ? `/daily-record-template${memoPath}` : memoPath;
+    const fullPath = process.env.NODE_ENV === 'development' ? `/daily-record${memoPath}` : memoPath;
     
     const response = await fetch(fullPath);
     

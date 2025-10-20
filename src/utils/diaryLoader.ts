@@ -60,8 +60,8 @@ export async function loadAllRecords(): Promise<Record[]> {
     // 모든 파일을 병렬로 로드
     const filePromises = recordFiles.map(async (filePath) => {
       try {
-        // 개발 환경에서는 /daily-record-template/ base URL을 포함해야 함
-        const fullPath = process.env.NODE_ENV === 'development' ? `/daily-record-template${filePath}` : filePath;
+        // 개발 환경에서는 /daily-record/ base URL을 포함해야 함
+        const fullPath = process.env.NODE_ENV === 'development' ? `/daily-record${filePath}` : filePath;
         const response = await fetch(fullPath);
         if (!response.ok) return null;
         const content = await response.text();
@@ -87,7 +87,7 @@ export async function loadAllRecords(): Promise<Record[]> {
 // 이미지 경로를 GitHub Pages에 맞게 변환하는 함수
 function processImagePaths(content: string, filePath: string): string {
   // 상대 경로 이미지를 절대 경로로 변환
-  const basePath = process.env.NODE_ENV === 'development' ? '/daily-record-template' : '';
+  const basePath = process.env.NODE_ENV === 'development' ? '/daily-record' : '';
   const processedContent = content.replace(
     /!\[([^\]]*)\]\(image\/([^)]+)\)/g,
     `![$1](${basePath}/records${filePath.replace('/records', '').replace(/\/[^/]+\.md$/, '')}/image/$2)`

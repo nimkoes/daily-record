@@ -7,7 +7,7 @@ import DiaryViewer from './components/DiaryViewer';
 
 function App() {
   return (
-    <Router basename="/daily-record-template">
+    <Router basename="/daily-record">
       <Layout>
         <Routes>
           <Route path="/" element={<Dashboard />} />

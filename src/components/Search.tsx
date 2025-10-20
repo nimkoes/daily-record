@@ -42,7 +42,7 @@ export default function Search() {
   };
 
   return (
-    <div className="relative">
+    <div className="relative w-full md:w-auto">
       <div className="relative">
         <input
           type="text"
@@ -51,7 +51,7 @@ export default function Search() {
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
           onFocus={() => query.trim() && setIsOpen(true)}
-          className="w-64 px-4 py-2 pl-10 pr-16 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full md:w-64 px-4 py-2 pl-10 pr-16 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -70,6 +70,9 @@ export default function Search() {
       {/* 검색 결과 드롭다운 */}
       {isOpen && results.length > 0 && (
         <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
+          <div className="sticky top-0 bg-white border-b border-gray-100 px-3 py-2 text-xs text-gray-500">
+            검색어: <span className="font-medium text-gray-900">{query}</span>
+          </div>
           {results.map((result, index) => (
             <div
               key={index}

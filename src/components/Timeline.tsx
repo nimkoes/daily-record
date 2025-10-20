@@ -550,23 +550,23 @@ export default function Timeline() {
         )}
       </div>
 
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-screen-lg mx-auto">
         {/* 기록 테이블 */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
+            <table className="min-w-full divide-y divide-gray-200 table-auto">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     제목
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="hidden">
                     요약
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:hidden">
                     태그
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                     작성일
                   </th>
                 </tr>
@@ -579,7 +579,7 @@ export default function Timeline() {
                   
                   return (
                     <tr key={record.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-3 md:px-6 py-4 whitespace-nowrap align-top">
                         <div className="flex items-center gap-2">
                           {record.type && (
                             <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${typeColors.badge}`}>
@@ -588,22 +588,32 @@ export default function Timeline() {
                           )}
                           <Link
                             to={`/diary/${year}/${month}/${day}/${record.slug}`}
-                            className="text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors"
+                            className="text-base md:text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors"
                             title={record.title}
                           >
                             {record.title.length > 15 ? `${record.title.substring(0, 15)}...` : record.title}
                           </Link>
                         </div>
+                        {/* PC에서 제목 아래 요약/태그 표시 */}
+                        {record.summary && (
+                          <div className="hidden md:block mt-1 text-sm text-gray-500 max-w-2xl">
+                            <div className="line-clamp-2" title={record.summary}>
+                              {record.summary}
+                            </div>
+                          </div>
+                        )}
+                        {record.tags.length > 0 && (
+                          <div className="hidden md:flex flex-wrap gap-1 mt-1">
+                            {record.tags.map((tag) => (
+                              <span key={tag} className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">#{tag}</span>
+                            ))}
+                          </div>
+                        )}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-500 max-w-xs">
-                        <div className="truncate" title={record.summary || '-'}>
-                          {record.summary ? 
-                            (record.summary.length > 25 ? `${record.summary.substring(0, 25)}...` : record.summary) 
-                            : '-'
-                          }
-                        </div>
+                      <td className="hidden">
+                        {/* 요약 열은 PC에서 숨김 (제목 아래로 이동) */}
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-3 md:px-6 py-4 md:hidden">
                         <div className="flex flex-wrap gap-1">
                           {record.tags.map((tag) => {
                             const isActive = selectedTags.includes(tag);
@@ -623,7 +633,7 @@ export default function Timeline() {
                           })}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-3 md:px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
                         {date.toLocaleDateString('ko-KR', { 
                           year: 'numeric',
                           month: 'short', 

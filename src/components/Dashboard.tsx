@@ -183,16 +183,16 @@ export default function Dashboard() {
         <p className="text-gray-600">기록 작성 현황과 최근 활동을 확인하세요</p>
       </div>
 
-      {/* 기본 통계 카드 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* 기본 통계 카드: 모바일 2열 */}
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
           <div className="flex items-center">
             <div className="p-3 bg-blue-100 rounded-xl">
               <span className="text-xl">📝</span>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">리스트</p>
-              <p className="text-2xl font-bold text-gray-900">{totalRecords}</p>
+              <p className="text-sm font-medium text-gray-600 whitespace-nowrap">리스트</p>
+              <p className="text-2xl font-bold text-gray-900 truncate" style={{maxWidth:'6ch'}}>{totalRecords}</p>
             </div>
           </div>
         </div>
@@ -203,8 +203,8 @@ export default function Dashboard() {
               <span className="text-xl">📅</span>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">이번 달</p>
-              <p className="text-2xl font-bold text-gray-900">{thisMonthCount}</p>
+              <p className="text-sm font-medium text-gray-600 whitespace-nowrap">이번 달</p>
+              <p className="text-2xl font-bold text-gray-900 truncate" style={{maxWidth:'6ch'}}>{thisMonthCount}</p>
             </div>
           </div>
         </div>
@@ -215,8 +215,8 @@ export default function Dashboard() {
               <span className="text-xl">📊</span>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">월평균 작성</p>
-              <p className="text-2xl font-bold text-gray-900">{avgRecordsPerMonth}개</p>
+              <p className="text-sm font-medium text-gray-600 whitespace-nowrap">월평균 작성</p>
+              <p className="text-2xl font-bold text-gray-900 truncate" style={{maxWidth:'6ch'}}>{avgRecordsPerMonth}개</p>
             </div>
           </div>
         </div>
@@ -227,22 +227,22 @@ export default function Dashboard() {
               <span className="text-xl">📅</span>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">이번 주 작성</p>
-              <p className="text-2xl font-bold text-gray-900">{thisWeekRecords}개</p>
+              <p className="text-sm font-medium text-gray-600 whitespace-nowrap">이번 주 작성</p>
+              <p className="text-2xl font-bold text-gray-900 truncate" style={{maxWidth:'6ch'}}>{thisWeekRecords}개</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 패턴 분석 카드 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* 패턴 분석 카드: 모바일 2열 */}
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <div className="bg-white p-4 rounded-lg shadow">
           <div className="flex items-center">
             <div className="p-2 bg-violet-100 rounded-lg">
               <span className="text-lg">📅</span>
             </div>
             <div className="ml-3">
-              <p className="text-xs font-medium text-gray-600">가장 활발한 요일</p>
+              <p className="text-xs font-medium text-gray-600 whitespace-nowrap">가장 활발한 요일</p>
               <p className="text-lg font-bold text-gray-900">{mostActiveWeekday ? mostActiveWeekday[0] : '없음'}</p>
               <p className="text-xs text-gray-500">{mostActiveWeekday ? `${mostActiveWeekday[1]}개` : ''}</p>
             </div>
@@ -255,7 +255,7 @@ export default function Dashboard() {
               <span className="text-lg">🔥</span>
             </div>
             <div className="ml-3">
-              <p className="text-xs font-medium text-gray-600">연속 작성일</p>
+              <p className="text-xs font-medium text-gray-600 whitespace-nowrap">연속 작성일</p>
               <p className="text-lg font-bold text-gray-900">{consecutiveDays}일</p>
             </div>
           </div>
@@ -267,7 +267,7 @@ export default function Dashboard() {
               <span className="text-lg">📖</span>
             </div>
             <div className="ml-3">
-              <p className="text-xs font-medium text-gray-600">가장 긴 기록</p>
+              <p className="text-xs font-medium text-gray-600 whitespace-nowrap">가장 긴 기록</p>
               <p className="text-lg font-bold text-gray-900">{longestRecord.toLocaleString()}자</p>
             </div>
           </div>
@@ -279,7 +279,7 @@ export default function Dashboard() {
               <span className="text-lg">📝</span>
             </div>
             <div className="ml-3">
-              <p className="text-xs font-medium text-gray-600">평균 글자수</p>
+              <p className="text-xs font-medium text-gray-600 whitespace-nowrap">평균 글자수</p>
               <p className="text-lg font-bold text-gray-900">{avgRecordLength.toLocaleString()}자</p>
             </div>
           </div>
@@ -439,16 +439,16 @@ export default function Dashboard() {
                       )}
                       <Link
                         to={`/diary/${year}/${month}/${day}/${record.slug}`}
-                        className="text-sm font-medium text-gray-900 hover:text-blue-600"
+                        className="text-base md:text-lg font-semibold text-gray-900 hover:text-blue-600"
                       >
                         {record.title}
                       </Link>
                     </div>
-                    <p className="mt-1 text-xs text-gray-600">
+                    <p className="mt-1 text-sm md:text-base text-gray-600">
                       {new Date(record.date).toLocaleDateString('ko-KR')}
                     </p>
                     {record.summary && (
-                      <p className="mt-2 text-xs text-gray-500 line-clamp-2">
+                      <p className="mt-2 text-sm md:text-base text-gray-500 line-clamp-2">
                         {record.summary}
                       </p>
                     )}

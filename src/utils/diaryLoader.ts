@@ -47,22 +47,31 @@ function parseFrontmatter(content: string): { data: RecordFrontmatter; content: 
   return { data, content: markdownContent };
 }
 
+// 간단 캐시(세션 단위)
+let cachedRecords: Record[] | null = null;
+let lastFetchAtMs: number | null = null;
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5분
+
 export async function loadAllRecords(): Promise<Record[]> {
+  // 캐시 유효 시 반환
+  if (cachedRecords && lastFetchAtMs && Date.now() - lastFetchAtMs < CACHE_TTL_MS) {
+    return cachedRecords;
+  }
+
   const records: Record[] = [];
-  
+
   try {
-    // diaryList.json에서 동적으로 생성된 파일 목록 가져오기
     const allFiles = (diaryList as RecordList).files;
-    
-    // memo.md 파일 제외하고 레코드 파일만 필터링
     const recordFiles = allFiles.filter(file => !file.includes('memo.md'));
-    
-    // 모든 파일을 병렬로 로드
+
+    // 네트워크 타임아웃 보호
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
     const filePromises = recordFiles.map(async (filePath) => {
       try {
-        // GitHub Pages 배포를 위해 항상 base URL 포함
         const fullPath = `/daily-record${filePath}`;
-        const response = await fetch(fullPath);
+        const response = await fetch(fullPath, { signal: controller.signal });
         if (!response.ok) return null;
         const content = await response.text();
         const record = parseRecordFile(filePath, content);
@@ -71,17 +80,21 @@ export async function loadAllRecords(): Promise<Record[]> {
         return null;
       }
     });
-    
+
     const results = await Promise.all(filePromises);
+    clearTimeout(timeoutId);
+
     const validRecords = results.filter((record): record is Record => record !== null);
     records.push(...validRecords);
-    
+
   } catch {
     // 에러 발생 시 빈 배열 반환
   }
-  
-  // 날짜 역순으로 정렬 (최신순)
-  return records.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  const sorted = records.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  cachedRecords = sorted;
+  lastFetchAtMs = Date.now();
+  return sorted;
 }
 
 // 이미지 경로를 GitHub Pages에 맞게 변환하는 함수

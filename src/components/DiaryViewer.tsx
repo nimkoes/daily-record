@@ -226,61 +226,40 @@ export default function DiaryViewer() {
     <div className="max-w-4xl mx-auto">
 
       {/* 이전/다음 기록 네비게이션 */}
-      <div className="flex justify-between mb-4">
+      <div className="flex justify-between gap-3 mb-4">
         {/* 이전 기록 버튼 */}
-        <div className="w-1/3">
+        <div className="w-1/2 sm:w-1/3">
           {prevRecord ? (
             <Link
               to={`/diary/${prevRecord.date.split('-')[0]}/${prevRecord.date.split('-')[1]}/${prevRecord.date.split('-')[2]}/${prevRecord.slug}`}
               className="block p-3 bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow text-left"
             >
-              <div className="text-xs font-bold text-gray-900 mb-1">
-                <div className="flex items-center gap-2">
-                  {prevRecord.type && (
-                    <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium ${getTypeColors(prevRecord.type).badge}`}>
-                      {prevRecord.type}
-                    </span>
-                  )}
-                  <span>{new Date(prevRecord.date).toLocaleDateString('ko-KR')} | {prevRecord.title}</span>
-                </div>
+              {/* 2줄 구성: 1) 날짜 + 타입  2) 제목(말줄임) */}
+              <div className="text-xs text-gray-700 flex items-center gap-2 mb-1">
+                <span>{new Date(prevRecord.date).toLocaleDateString('ko-KR')}</span>
+                {prevRecord.type && (
+                  <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium ${getTypeColors(prevRecord.type).badge}`}>
+                    {prevRecord.type}
+                  </span>
+                )}
               </div>
+              <div className="text-sm font-semibold text-gray-900 truncate">
+                {prevRecord.title}
+              </div>
+              {/* PC에서 summary + 태그 표시 */}
               {prevRecord.summary && (
-                <div className="text-xs text-gray-600 line-clamp-2 mb-2">
+                <div className="hidden md:block mt-1 text-xs text-gray-500 line-clamp-2">
                   {prevRecord.summary}
                 </div>
               )}
               {prevRecord.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1">
-                  {prevRecord.tags.slice(0, 3).map((tag) => (
-                    <span
-                      key={tag}
-                      className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700"
-                    >
-                      #{tag}
-                    </span>
+                <div className="hidden md:flex flex-wrap gap-1 mt-1">
+                  {prevRecord.tags.slice(0, 5).map((tag) => (
+                    <span key={tag} className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-gray-100 text-gray-700">#{tag}</span>
                   ))}
-                  {prevRecord.tags.length > 3 && (
-                    <div className="relative group">
-                      <span className="text-xs text-gray-400 cursor-help">
-                        +{prevRecord.tags.length - 3}
-                      </span>
-                      <div className="absolute bottom-full left-0 mb-2 p-2 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 max-w-xs">
-                        <div className="flex flex-wrap gap-1">
-                          {prevRecord.tags.slice(3).map((tag) => (
-                            <span
-                              key={tag}
-                              className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 whitespace-nowrap"
-                            >
-                              #{tag}
-                            </span>
-                          ))}
-                        </div>
-                        <div className="absolute top-full left-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-white"></div>
-                      </div>
-                    </div>
-                  )}
                 </div>
               )}
+              {/* 모바일에서는 summary/태그 숨김 */}
             </Link>
           ) : (
             <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 text-center">
@@ -289,63 +268,41 @@ export default function DiaryViewer() {
           )}
         </div>
 
-        {/* 중간 공간 */}
-        <div className="w-1/3"></div>
+        {/* 중간 공간 (데스크톱 전용) */}
+        <div className="hidden sm:block w-1/3"></div>
 
         {/* 다음 기록 버튼 */}
-        <div className="w-1/3">
+        <div className="w-1/2 sm:w-1/3">
           {nextRecord ? (
             <Link
               to={`/diary/${nextRecord.date.split('-')[0]}/${nextRecord.date.split('-')[1]}/${nextRecord.date.split('-')[2]}/${nextRecord.slug}`}
               className="block p-3 bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow text-right"
             >
-              <div className="text-xs font-bold text-gray-900 mb-1">
-                <div className="flex items-center gap-2 justify-end">
-                  <span>{new Date(nextRecord.date).toLocaleDateString('ko-KR')} | {nextRecord.title}</span>
-                  {nextRecord.type && (
-                    <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium ${getTypeColors(nextRecord.type).badge}`}>
-                      {nextRecord.type}
-                    </span>
-                  )}
-                </div>
+              <div className="text-xs text-gray-700 flex items-center gap-2 justify-end mb-1">
+                {nextRecord.type && (
+                  <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium ${getTypeColors(nextRecord.type).badge}`}>
+                    {nextRecord.type}
+                  </span>
+                )}
+                <span>{new Date(nextRecord.date).toLocaleDateString('ko-KR')}</span>
               </div>
+              <div className="text-sm font-semibold text-gray-900 truncate text-right">
+                {nextRecord.title}
+              </div>
+              {/* PC에서 summary + 태그 표시 */}
               {nextRecord.summary && (
-                <div className="text-xs text-gray-600 line-clamp-2 mb-2">
+                <div className="hidden md:block mt-1 text-xs text-gray-500 line-clamp-2 text-right">
                   {nextRecord.summary}
                 </div>
               )}
               {nextRecord.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1 justify-end">
-                  {nextRecord.tags.slice(0, 3).map((tag) => (
-                    <span
-                      key={tag}
-                      className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700"
-                    >
-                      #{tag}
-                    </span>
+                <div className="hidden md:flex flex-wrap gap-1 mt-1 justify-end">
+                  {nextRecord.tags.slice(0, 5).map((tag) => (
+                    <span key={tag} className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-gray-100 text-gray-700">#{tag}</span>
                   ))}
-                  {nextRecord.tags.length > 3 && (
-                    <div className="relative group">
-                      <span className="text-xs text-gray-400 cursor-help">
-                        +{nextRecord.tags.length - 3}
-                      </span>
-                      <div className="absolute bottom-full right-0 mb-2 p-2 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 max-w-xs">
-                        <div className="flex flex-wrap gap-1">
-                          {nextRecord.tags.slice(3).map((tag) => (
-                            <span
-                              key={tag}
-                              className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 whitespace-nowrap"
-                            >
-                              #{tag}
-                            </span>
-                          ))}
-                        </div>
-                        <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-white"></div>
-                      </div>
-                    </div>
-                  )}
                 </div>
               )}
+              {/* 모바일에서는 summary/태그 숨김 */}
             </Link>
           ) : (
             <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 text-center">
@@ -357,77 +314,71 @@ export default function DiaryViewer() {
 
       {/* 기록 헤더 */}
       <article className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-        <div className="p-8 border-b border-gray-200">
-          <div className="flex justify-between items-start mb-4">
+        <div className="p-6 md:p-8 border-b border-gray-200">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-3 mb-4">
             <div className="flex items-center gap-3">
               {record.type && (
                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getTypeColors(record.type).badge}`}>
                   {record.type}
                 </span>
               )}
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight break-keep truncate">
                 {record.title}
               </h1>
             </div>
             
-            {/* 네비게이션 버튼들 */}
-            <div className="flex space-x-2">
-              <Link
-                to="/"
-                className="inline-flex items-center px-3 py-2 text-sm text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                title="홈으로"
-              >
-                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-                홈
-              </Link>
-              <button
-                onClick={goToCalendar}
-                className="inline-flex items-center px-3 py-2 text-sm text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                title="캘린더로"
-              >
-                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                캘린더
-              </button>
-              <button
-                onClick={goToList}
-                className="inline-flex items-center px-3 py-2 text-sm text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                title="목록으로"
-              >
-                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-                </svg>
-                목록
-              </button>
-            </div>
-          </div>
-          
-          <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
-            <div className="flex items-center space-x-4">
-              <span className="flex items-center">
-                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                {date.toLocaleDateString('ko-KR', { 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric',
-                  weekday: 'long'
-                })}
-              </span>
-            </div>
+            {/* 상단 버튼 줄 제거 (모바일 중복 방지) */}
           </div>
 
+          {/* 모바일 전용 네비 제거(요청) */}
+          
+          {/* 날짜 + 아이콘 버튼을 한 줄로 우측 정렬 */}
+          <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
+            <div className="flex items-center">
+              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              {date.toLocaleDateString('ko-KR', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                weekday: 'long'
+              })}
+            </div>
+            <div className="flex space-x-2">
+              <Link to="/" className="inline-flex w-10 aspect-square md:w-8 items-center justify-center border border-gray-300 rounded-lg hover:bg-gray-50" title="홈">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+              </Link>
+              <button onClick={goToCalendar} className="inline-flex w-10 aspect-square md:w-8 items-center justify-center border border-gray-300 rounded-lg hover:bg-gray-50" title="캘린더">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </button>
+              <button onClick={goToList} className="inline-flex w-10 aspect-square md:w-8 items-center justify-center border border-gray-300 rounded-lg hover:bg-gray-50" title="목록">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          {/* 모바일: 요약 표시 (말줄임 처리) */}
+          {record.summary && (
+            <div className="md:hidden mb-3 text-gray-600 text-base leading-relaxed">
+              <p className="line-clamp-2">
+                {record.summary}
+              </p>
+            </div>
+          )}
+
           {record.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2">
+            <div className="w-full flex flex-wrap justify-start content-start gap-[3px] md:gap-2">
               {record.tags.map((tag) => (
                 <button
                   key={tag}
                   onClick={() => goToListWithTag(tag)}
-                  className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors cursor-pointer"
+                  className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors cursor-pointer whitespace-nowrap tag-chip"
                   title={`#${tag} 태그로 필터링`}
                 >
                   #{tag}
@@ -437,8 +388,8 @@ export default function DiaryViewer() {
           )}
         </div>
 
-        {/* 기록 내용 */}
-        <div className="p-8">
+          {/* 기록 내용 */}
+          <div className="p-6 md:p-8">
           <div className="prose prose-lg max-w-none [&_ul]:list-disc [&_ol]:list-decimal [&_li]:ml-4 [&_ul_ul]:ml-6 [&_ol_ol]:ml-6 [&_ul_ol]:ml-6 [&_ol_ul]:ml-6">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
@@ -514,21 +465,14 @@ export default function DiaryViewer() {
                 img: ({ src, alt }) => {
                   const imageSrc = processImageSrc(src || '');
                   return (
-                    <div className="my-4 flex justify-center">
-                      <img
-                        src={imageSrc}
-                        alt={alt}
-                        className="rounded-lg shadow-sm cursor-pointer hover:opacity-90 transition-opacity"
-                        onClick={() => handleImageClick(imageSrc, alt || '')}
-                        onLoad={(e) => {
-                          const img = e.target as HTMLImageElement;
-                          const { width, height } = getImageDimensions(img.naturalWidth, img.naturalHeight);
-                          img.style.width = `${width}px`;
-                          img.style.height = `${height}px`;
-                        }}
-                        style={{ maxWidth: '600px', maxHeight: '600px' }}
-                      />
-                    </div>
+                    <img
+                      src={imageSrc}
+                      alt={alt}
+                      loading="lazy"
+                      decoding="async"
+                      className="block mx-auto my-3 md:my-4 rounded-lg shadow-sm cursor-pointer hover:opacity-90 transition-opacity w-full h-auto max-w-full"
+                      onClick={() => handleImageClick(imageSrc, alt || '')}
+                    />
                   );
                 },
                 table: ({ children }) => (

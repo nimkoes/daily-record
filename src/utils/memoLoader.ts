@@ -1,12 +1,21 @@
 // 메모 파일 로드 함수
+let cachedMemo: string | null = null;
+let memoFetchedAtMs: number | null = null;
+const MEMO_TTL_MS = 5 * 60 * 1000; // 5분
+
 export const loadMemo = async (): Promise<string> => {
+  if (cachedMemo && memoFetchedAtMs && Date.now() - memoFetchedAtMs < MEMO_TTL_MS) {
+    return cachedMemo;
+  }
   try {
     // 올바른 경로 설정
     const memoPath = '/records/memo.md';
     // GitHub Pages 배포를 위해 항상 base URL 포함
     const fullPath = `/daily-record${memoPath}`;
     
-    const response = await fetch(fullPath);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+    const response = await fetch(fullPath, { signal: controller.signal });
     
     if (!response.ok) {
       throw new Error(`파일을 찾을 수 없습니다. 상태: ${response.status}`);
@@ -21,7 +30,10 @@ export const loadMemo = async (): Promise<string> => {
     
     // 마크다운 내용인지 확인
     if (content.trim().length > 0 && !content.includes('<!doctype html>') && !content.includes('<html')) {
-      return content;
+      cachedMemo = content;
+      memoFetchedAtMs = Date.now();
+      clearTimeout(timeoutId);
+      return cachedMemo;
     }
     
     throw new Error('마크다운 내용이 아님');
